@@ -1,0 +1,595 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Group Chat API's",
+        "description": "My Group Chat API's",
+        "contact": {
+            "email": "malleshrakhi@gmail.com"
+        }
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "User",
+            "description": "API for users in the system"
+        },
+        {
+            "name": "Chat",
+            "description": "API for chat in the system"
+        },
+        {
+            "name": "Message",
+            "description": "API for messages in the system"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "bearerAuth": {
+            "name": "Authorization",
+            "in": "header",
+            "type": "apiKey",
+            "description": "JWT Authorization header."
+        }
+    },
+    "paths": {
+        "/user/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "description": "Create new user in system",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that we want to create",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "description": "Login user in system",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that we want to login",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User token generated",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "description": "Logout user from the system",
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User Logged out of the system"
+                    }
+                }
+            }
+        },
+        "/user/all": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by user name or email",
+                        "type": "string"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Get all users in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "_id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/all": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "parameters": [],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Get all  chats in system for logged in user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Chat"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/group": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "description": "Create group chat with current logged in user as admin",
+                "parameters": [
+                    {
+                        "name": "chat",
+                        "in": "body",
+                        "description": "Group chat creation",
+                        "schema": {
+                            "$ref": "#/definitions/Chat"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group chat created"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by group name",
+                        "type": "string"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Get all group chats in system for logged in user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Chat"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat/group/{id}/add-users": {
+            "patch": {
+                "tags": [
+                    "Chat"
+                ],
+                "description": "Create group chat with current logged in user as admin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Group chat id to add users in",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Group chat creation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users added inGroup chat"
+                    }
+                }
+            }
+        },
+        "/chat/group/{id}/remove-user/{userId}": {
+            "delete": {
+                "tags": [
+                    "Chat"
+                ],
+                "description": "Create group chat with current logged in user as admin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Group chat id to remove user from",
+                        "type": "string"
+                    },
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "required": true,
+                        "description": "User id to be removed from the group chat",
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users removed  from Group chat"
+                    }
+                }
+            }
+        },
+        "/chat/group/{id}": {
+            "delete": {
+                "tags": [
+                    "Chat"
+                ],
+                "description": "Create group chat with current logged in user as admin",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "Group chat id to remove user from",
+                        "type": "string"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Users removed  from Group chat"
+                    }
+                }
+            }
+        },
+        "/chat": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "description": "Create one to one chat",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "one to one chat creation",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group chat created"
+                    }
+                }
+            }
+        },
+        "/message/{chatId}": {
+            "get": {
+                "tags": [
+                    "Message"
+                ],
+                "parameters": [
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Get all messages by chat id",
+                        "type": "string"
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Get all messages by chat id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Chat"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/": {
+            "post": {
+                "tags": [
+                    "Message"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Send message by chat id",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "chatId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "Send message by chat id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/message/emoji/{messageId}": {
+            "patch": {
+                "tags": [
+                    "Message"
+                ],
+                "parameters": [
+                    {
+                        "name": "messageId",
+                        "in": "path",
+                        "required": true,
+                        "description": "update message reaction by user by message id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "update message reaction by user by message id",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "emojiCode": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "summary": "update message reaction by user by message id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Message"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "required": [
+                "name",
+                "email"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Chat": {
+            "required": [
+                "users"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "isGroupChat": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "groupAdmin": {
+                    "type": "string"
+                },
+                "latestMessage": {
+                    "$ref": "#/definitions/Message"
+                }
+            }
+        },
+        "Message": {
+            "required": [
+                "message",
+                "chat"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "sender": {
+                    "$ref": "#/definitions/User"
+                },
+                "chat": {
+                    "$ref": "#/definitions/Chat"
+                },
+                "emojiByUsers": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "user": {
+                                "$ref": "#/definitions/User"
+                            },
+                            "emojiCode": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
